@@ -6,23 +6,25 @@ function App() {
   const [text, setText] = useState([]);
   const [position, setPosition] = useState(0);
   const [typedText, setTypedText] = useState("");
-  const [hasBegun, setHasBegun] = useState(false);
-  const [hasFinished, setHasFinished] = useState(false);
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
 
   useEffect(() => {
-    setText(randomWords(1000));
+    setText(randomWords(10));
   }, []);
 
   function handleKeystroke(event) {
-    if (!hasBegun) {
-      setHasBegun(true);
-      setTimeout(() => setHasFinished(true), 10 * 1000);
+    if (!startTime) {
+      setStartTime(Date.now());
     }
 
     const newTypedText = event.target.value;
     if (newTypedText === text[position]) {
       setTypedText("");
       setPosition(position + 1);
+      if (position === text.length - 2) {
+        setEndTime(Date.now());
+      }
     } else {
       setTypedText(newTypedText);
     }
@@ -35,10 +37,14 @@ function App() {
         type="text"
         onChange={handleKeystroke}
         value={typedText}
-        disabled={hasFinished}
+        disabled={endTime}
       />
-      {hasFinished && (
-        <div>Your typing speed is {position * 6} words per minute!</div>
+      {endTime && (
+        <div>
+          Your typing speed is{" "}
+          {Math.round(text.length / ((endTime - startTime) / (1000 * 60)))}{" "}
+          words per minute!
+        </div>
       )}
     </div>
   );
