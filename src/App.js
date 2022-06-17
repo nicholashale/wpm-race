@@ -1,48 +1,72 @@
 import "./App.css";
-import { useState, useEffect } from "react";
+import { useReducer } from "react";
 import randomWords from "random-words";
 
-function App() {
-  const [text, setText] = useState([]);
-  const [position, setPosition] = useState(0);
-  const [typedText, setTypedText] = useState("");
-  const [startTime, setStartTime] = useState(null);
-  const [endTime, setEndTime] = useState(null);
+const initialAssState = {
+  text: randomWords(10),
+  position: 0,
+  typedText: "",
+  startTime: null,
+  endTime: null,
+};
 
-  useEffect(() => {
-    setText(randomWords(10));
-  }, []);
+function assReducer(currentState, action) {
+  switch (action.type) {
+    case "START_ASS":
+      return { ...currentState, startTime: Date.now() };
+    case "CORRECT_WORD":
+      const position = currentState.position + 1;
+      if (position === currentState.text.length - 1) {
+        return {
+          ...currentState,
+          endTime: Date.now(),
+          typedText: "",
+          position,
+        };
+      } else {
+        return { ...currentState, typedText: "", position };
+      }
+    case "TYPED_TEXT":
+      return { ...currentState, typedText: action.payload };
+    default:
+      return currentState;
+  }
+}
+
+function App() {
+  const [state, dispatch] = useReducer(assReducer, initialAssState);
+
+  const currentWord = state.text[state.position];
 
   function handleKeystroke(event) {
-    if (!startTime) {
-      setStartTime(Date.now());
+    if (!state.startTime) {
+      dispatch({ type: "START_ASS" });
     }
 
     const newTypedText = event.target.value;
-    if (newTypedText === text[position]) {
-      setTypedText("");
-      setPosition(position + 1);
-      if (position === text.length - 2) {
-        setEndTime(Date.now());
-      }
+    if (newTypedText === currentWord) {
+      dispatch({ type: "CORRECT_WORD" });
     } else {
-      setTypedText(newTypedText);
+      dispatch({ type: "TYPED_TEXT", payload: newTypedText });
     }
   }
 
   return (
     <div className="App">
-      <div>Current word: {text[position]}</div>
+      <div>Current word: {currentWord}</div>
       <input
         type="text"
         onChange={handleKeystroke}
-        value={typedText}
-        disabled={endTime}
+        value={state.typedText}
+        disabled={state.endTime}
       />
-      {endTime && (
+      {state.endTime && (
         <div>
           Your typing speed is{" "}
-          {Math.round(text.length / ((endTime - startTime) / (1000 * 60)))}{" "}
+          {Math.round(
+            state.text.length /
+              ((state.endTime - state.startTime) / (1000 * 60))
+          )}{" "}
           words per minute!
         </div>
       )}
