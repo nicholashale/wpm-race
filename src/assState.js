@@ -21,7 +21,7 @@ function assReducer(currentState, action) {
       return { ...currentState, startTime: Date.now() };
     case "CORRECT_WORD":
       const position = currentState.position + 1;
-      if (position === currentState.text.length - 1) {
+      if (position === currentState.text.length) {
         return {
           ...currentState,
           endTime: Date.now(),
