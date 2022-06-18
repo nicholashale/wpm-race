@@ -1,5 +1,6 @@
 import { useAssReducer, AssContextProvider } from "./assState";
-import "./App.css";
+import styles from "./App.module.css";
+import classNames from "classnames";
 
 function App() {
   const [state, dispatch] = useAssReducer();
@@ -22,7 +23,21 @@ function App() {
   return (
     <AssContextProvider value={[state, dispatch]}>
       <div className="App">
-        <div>Current word: {currentWord}</div>
+        <div className={styles.text}>
+          {state.text.map((word, wordIndex) => {
+            return (
+              <span
+                className={classNames(styles.word, {
+                  [styles.correct]: state.position > wordIndex,
+                })}
+              >
+                {word.split("").map((letter) => (
+                  <span className={styles.letter}>{letter}</span>
+                ))}
+              </span>
+            );
+          })}
+        </div>
         <input
           type="text"
           onChange={handleKeystroke}

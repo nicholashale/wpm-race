@@ -1,0 +1,24 @@
+.text {
+    display: flex;
+    flex-direction: row;
+    align-content: flex-start;
+    width: 1000px;
+    flex-wrap: wrap;
+    font-family: monospace;
+    font-size: 2rem;
+}
+
+.word  {
+    background-color: beige;
+    /* margin-left: 1ch;
+    margin-right: 1ch; */
+    margin: 0.37rem;
+}
+
+.word.correct {
+    background-color: greenyellow;
+}
+
+.letter {
+    color: blue;
+}
