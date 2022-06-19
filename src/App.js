@@ -1,6 +1,7 @@
 import { useAssReducer, AssContextProvider } from "./assState";
 import AssText from "./AssText";
 import AssInput from "./AssInput";
+import StatDisplay from "./StatDisplay";
 
 function App() {
   const [state, dispatch] = useAssReducer();
@@ -10,16 +11,7 @@ function App() {
       <div className="App">
         <AssText />
         <AssInput />
-        {state.endTime && (
-          <div>
-            Your typing speed is{" "}
-            {Math.round(
-              state.text.length /
-                ((state.endTime - state.startTime) / (1000 * 60))
-            )}{" "}
-            words per minute!
-          </div>
-        )}
+        {state.endTime && <StatDisplay />}
       </div>
     </AssContextProvider>
   );
