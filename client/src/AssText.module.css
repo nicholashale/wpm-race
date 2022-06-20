@@ -1,30 +1,28 @@
 .text {
-    display: flex;
-    flex-direction: row;
-    align-content: flex-start;
-    width: 1000px;
-    flex-wrap: wrap;
-    font-family: monospace;
-    font-size: 2rem;
+  display: flex;
+  flex-direction: row;
+  align-content: flex-start;
+  width: 1000px;
+  flex-wrap: wrap;
+  font-family: monospace;
+  font-size: 2rem;
 }
 
-/* .word  {
-    background-color: beige;
-    margin: 0.37rem;
+.word {
+  margin: 0.37rem;
 }
 
-.word.correct {
-    background-color: greenyellow;
-} */
+.word.active {
+}
+
+.word.future {
+  color: grey;
+}
 
 .letter.correct {
-    color: green;
+  color: green;
 }
 
 .letter.incorrect {
-    color: red;
-}
-
-.letter.inactive {
-    color: grey;
+  color: red;
 }

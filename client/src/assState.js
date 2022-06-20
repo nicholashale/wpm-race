@@ -5,11 +5,11 @@ export const useAssReducer = () => useReducer(assReducer, initialAssState());
 export const useAssContext = () => useContext(assContext);
 
 const initialAssState = () => ({
-  text: randomWords(50).join(" ").split(""),
-  position: 0,
+  text: randomWords(50),
   typedText: [],
   startTime: null,
   endTime: null,
+  currentWord: [],
 });
 
 const assContext = createContext();
@@ -20,15 +20,31 @@ function assReducer(state, action) {
     case "START_ASS":
       return { ...state, startTime: Date.now() };
 
-    case "TYPED_LETTER":
-      return {
-        ...state,
-        typedText: [...state.typedText, action.payload],
-        position: state.position + 1,
-      };
-
     case "RESTART_ASS":
       return initialAssState();
+
+    case "LETTER":
+      return {
+        ...state,
+        currentWord: [...state.currentWord, action.payload],
+      };
+
+    case "SPACE":
+      if (state.currentWord.length > 0) {
+        return {
+          ...state,
+          typedText: [...state.typedText, state.currentWord.join("")],
+          currentWord: [],
+        };
+      } else {
+        return state;
+      }
+
+    case "BACKSPACE":
+      return {
+        ...state,
+        currentWord: state.currentWord.slice(0, state.currentWord.length - 1),
+      };
 
     default:
       return state;

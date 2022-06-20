@@ -21,7 +21,13 @@ export default function AssText() {
         if (!state.startTime) {
           dispatch({ type: "START_ASS" });
         }
-        dispatch({ type: "TYPED_LETTER", payload: e.key });
+        dispatch({ type: "LETTER", payload: e.key });
+      }
+      if (e.key === " ") {
+        dispatch({ type: "SPACE" });
+      }
+      if (e.key === "Backspace") {
+        dispatch({ type: "BACKSPACE" });
       }
     },
     [state, dispatch]
@@ -36,30 +42,69 @@ export default function AssText() {
 
   return (
     <div className={styles.text}>
-      {state.text.map((letter, letterIndex) => {
-        if (letterIndex < state.position) {
-          return (
-            <span
-              key={letterIndex}
-              className={classNames(
-                { [styles.letter]: letter !== " " },
-                { [styles.correct]: letter === state.typedText[letterIndex] },
-                { [styles.incorrect]: letter !== state.typedText[letterIndex] }
-              )}
-            >
-              {letter}
-            </span>
-          );
-        } else {
-          return (
-            <span
-              key={letterIndex}
-              className={classNames(styles.letter, styles.inactive)}
-            >
-              {letter}
-            </span>
-          );
-        }
+      {state.text.map((word, wordIndex) => {
+        const currentWordIndex = state.typedText.length;
+        return (
+          <span
+            key={wordIndex}
+            className={classNames(
+              styles.word,
+              {
+                [styles.active]: currentWordIndex === wordIndex,
+              },
+              { [styles.future]: wordIndex > currentWordIndex }
+            )}
+          >
+            {word.split("").map((letter, letterIndex) => {
+              let typedLetter;
+              if (wordIndex < currentWordIndex) {
+                typedLetter = state.typedText[wordIndex][letterIndex];
+              } else if (wordIndex === currentWordIndex) {
+                typedLetter = state.currentWord[letterIndex];
+              }
+              return (
+                <span
+                  key={letterIndex}
+                  className={classNames(
+                    styles.letter,
+                    {
+                      [styles.correct]: typedLetter && letter === typedLetter,
+                    },
+                    {
+                      [styles.incorrect]: typedLetter && letter !== typedLetter,
+                    }
+                  )}
+                >
+                  {letter}
+                </span>
+              );
+            })}
+          </span>
+        );
+
+        // if (letterIndex < state.position) {
+        // return (
+        //   <span
+        //     key={letterIndex}
+        //     className={classNames(
+        //       { [styles.letter]: letter !== " " },
+        //       { [styles.correct]: letter === state.typedText[letterIndex] },
+        //       { [styles.incorrect]: letter !== state.typedText[letterIndex] }
+        //     )}
+        //   >
+        //     {letter}
+        //     </span>
+        //   );
+        // } else {
+        //   return (
+        //     <span
+        //       key={letterIndex}
+        //       className={classNames(styles.letter, styles.inactive)}
+        //     >
+        //       {letter}
+        //     </span>
+        //   );
+        // }
       })}
     </div>
   );
