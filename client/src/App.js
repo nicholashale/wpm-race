@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAssReducer, AssContextProvider } from "./assState";
 import AssText from "./AssText";
-import AssInput from "./AssInput";
 import StatDisplay from "./StatDisplay";
 
 function App() {
@@ -44,7 +43,6 @@ function App() {
 
       <AssContextProvider value={[state, dispatch]}>
         <AssText />
-        <AssInput />
         {state.endTime && <StatDisplay />}
       </AssContextProvider>
     </div>

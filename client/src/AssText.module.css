@@ -8,17 +8,23 @@
     font-size: 2rem;
 }
 
-.word  {
+/* .word  {
     background-color: beige;
-    /* margin-left: 1ch;
-    margin-right: 1ch; */
     margin: 0.37rem;
 }
 
 .word.correct {
     background-color: greenyellow;
+} */
+
+.letter.correct {
+    color: green;
 }
 
-.letter {
-    color: blue;
+.letter.incorrect {
+    color: red;
+}
+
+.letter.inactive {
+    color: grey;
 }
