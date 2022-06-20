@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_id: 1
+  race_id: 1
+  time_ms: 1
+  accuracy_percent: 1.5
+  place: 1
+
+two:
+  user_id: 1
+  race_id: 1
+  time_ms: 1
+  accuracy_percent: 1.5
+  place: 1

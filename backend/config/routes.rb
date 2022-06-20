@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :reports
+  resources :races
   resources :users
   
   post "/login", to: "sessions#create"
