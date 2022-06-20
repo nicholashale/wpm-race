@@ -13,7 +13,7 @@ function App() {
   function handleLogin(event) {
     event.preventDefault();
 
-    fetch("/login?" + new URLSearchParams({ username, password }), {
+    fetch("/api/login?" + new URLSearchParams({ username, password }), {
       method: "POST",
     })
       .then((res) => res.json())
