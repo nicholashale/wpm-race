@@ -1,9 +1,26 @@
+import { useCallback, useEffect } from "react";
 import { useAssContext } from "./assState";
 
 export default function AssInput() {
   const [state, dispatch] = useAssContext();
 
-  function handleKeystroke(event) {
+  const handleKeystroke = useCallback(
+    (e) => {
+      if (e.key === "Escape") {
+        dispatch({ type: "RESTART_ASS" });
+      }
+    },
+    [dispatch]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keyup", handleKeystroke);
+    return () => {
+      document.removeEventListener("keyup", handleKeystroke);
+    };
+  }, [handleKeystroke]);
+
+  function handleTypedInput(event) {
     if (!state.startTime) {
       dispatch({ type: "START_ASS" });
     }
@@ -19,7 +36,7 @@ export default function AssInput() {
   return (
     <input
       type="text"
-      onChange={handleKeystroke}
+      onChange={handleTypedInput}
       value={state.typedText}
       disabled={state.endTime}
     />
