@@ -41,10 +41,6 @@ function assReducer(state, action) {
         currentWord: [],
       };
 
-      if (state.typedText.length === state.text.length - 1) {
-        nextState.endTime = Date.now();
-      }
-
       const sampleLength = nextState.text
         .slice(0, nextState.typedText.length)
         .join("").length;
@@ -62,6 +58,10 @@ function assReducer(state, action) {
         }
       });
       nextState.accuracy = accCount / sampleLength;
+
+      if (nextState.typedText.length === nextState.text.length) {
+        nextState.endTime = Date.now();
+      }
 
       return nextState;
 

@@ -10,8 +10,6 @@ export default function AssText() {
   const [state, dispatch] = useAssContext();
   const handleKeystroke = useCallback(
     (e) => {
-      console.log("testing key:", e.key);
-
       if (e.key === "Escape") {
         dispatch({ type: "RESTART_ASS" });
         return;
