@@ -2,13 +2,13 @@ import { useAssContext } from "./assState";
 
 export default function StatDisplay() {
   const [state, dispatch] = useAssContext();
+  const wpm = Math.round(
+    state.text.length / ((state.endTime - state.startTime) / (1000 * 60))
+  );
   return (
     <div>
-      Your typing speed is{" "}
-      {Math.round(
-        state.text.length / ((state.endTime - state.startTime) / (1000 * 60))
-      )}{" "}
-      words per minute!
+      <p>Your typing speed is {wpm} words per minute!</p>
+      <p>Your accuracy is {state.accuracy * 100}%!</p>
     </div>
   );
 }

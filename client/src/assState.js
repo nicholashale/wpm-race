@@ -5,11 +5,12 @@ export const useAssReducer = () => useReducer(assReducer, initialAssState());
 export const useAssContext = () => useContext(assContext);
 
 const initialAssState = () => ({
-  text: randomWords(50),
+  text: randomWords(10),
   typedText: [],
   startTime: null,
   endTime: null,
   currentWord: [],
+  accuracy: null,
 });
 
 const assContext = createContext();
@@ -30,15 +31,39 @@ function assReducer(state, action) {
       };
 
     case "SPACE":
-      if (state.currentWord.length > 0) {
-        return {
-          ...state,
-          typedText: [...state.typedText, state.currentWord.join("")],
-          currentWord: [],
-        };
-      } else {
+      if (state.currentWord.length === 0) {
         return state;
       }
+
+      let nextState = {
+        ...state,
+        typedText: [...state.typedText, state.currentWord.join("")],
+        currentWord: [],
+      };
+
+      if (state.typedText.length === state.text.length - 1) {
+        nextState.endTime = Date.now();
+      }
+
+      const sampleLength = nextState.text
+        .slice(0, nextState.typedText.length)
+        .join("").length;
+      let accCount = sampleLength;
+
+      nextState.typedText.forEach((word, wordIndex) => {
+        const sampleWord = nextState.text[wordIndex];
+        word.split("").forEach((letter, letterIndex) => {
+          if (letter !== sampleWord[letterIndex]) {
+            accCount -= 1;
+          }
+        });
+        if (word.length < sampleWord.length) {
+          accCount -= sampleWord.length - word.length;
+        }
+      });
+      nextState.accuracy = accCount / sampleLength;
+
+      return nextState;
 
     case "BACKSPACE":
       return {
