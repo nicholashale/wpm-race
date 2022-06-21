@@ -72,6 +72,11 @@ export default function AssText() {
                     },
                     {
                       [styles.incorrect]: typedLetter && letter !== typedLetter,
+                    },
+                    {
+                      [styles.next]:
+                        wordIndex === currentWordIndex &&
+                        letterIndex === state.currentWord.length,
                     }
                   )}
                 >
