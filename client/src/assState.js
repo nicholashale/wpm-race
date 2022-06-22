@@ -71,6 +71,12 @@ function assReducer(state, action) {
         currentWord: state.currentWord.slice(0, state.currentWord.length - 1),
       };
 
+    case "RECEIVED_TEXT":
+      return {
+        ...initialAssState(),
+        text: action.payload,
+      };
+
     default:
       return state;
   }

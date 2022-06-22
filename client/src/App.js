@@ -12,16 +12,28 @@ function App() {
   const [password, setPassword] = useState("");
   const [authState, authDispatch] = useAuthReducer();
   const [lobbyCode, setLobbyCode] = useState(null);
+  const [lobbyCodeInput, setLobbyCodeInput] = useState("");
   const socket = useMemo(() => io("http://localhost:3001"), []);
 
   useEffect(() => {
     if (socket) {
-      socket.on("createdLobby", (payload) => setLobbyCode(payload.lobbyCode));
+      //handle failedJoin event
+      socket.on("setText", (payload) => alert(payload.text));
     }
   }, [socket]);
 
   function handleCreateLobby() {
-    socket.emit("createLobby", { text: assState.text });
+    socket.emit("createLobby", { text: assState.text }, (payload) =>
+      setLobbyCode(payload.lobbyCode)
+    );
+  }
+
+  function handleJoinLobby(e) {
+    e.preventDefault();
+    socket.emit("joinLobby", { lobbyCode: lobbyCodeInput }, (payload) => {
+      console.log("joined lobby");
+      assDispatch({ type: "RECEIVED_TEXT", payload: payload.text });
+    });
   }
 
   function handleLogin(event) {
@@ -77,7 +89,17 @@ function App() {
         <div>
           {lobbyCode && `Your lobby code is ${lobbyCode}`}
           {!lobbyCode && (
-            <button onClick={handleCreateLobby}>Create Lobby!</button>
+            <>
+              <button onClick={handleCreateLobby}>Create Lobby!</button>
+              <form id="join-lobby" onSubmit={handleJoinLobby}>
+                <input
+                  type="text"
+                  value={lobbyCodeInput}
+                  onChange={(e) => setLobbyCodeInput(e.target.value)}
+                />
+                <button type="submit">Join Lobby!</button>
+              </form>
+            </>
           )}
         </div>
         <AssContextProvider value={[assState, assDispatch]}>
