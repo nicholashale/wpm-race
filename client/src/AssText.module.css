@@ -1,4 +1,4 @@
-.text {
+#text {
   display: flex;
   flex-direction: row;
   align-content: flex-start;

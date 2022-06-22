@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 
 import styles from "./AssText.module.css";
 import { useAssContext } from "./assState";
@@ -7,28 +7,45 @@ import { useAssContext } from "./assState";
 const ALPHA_LOWER = "abcdefghijklmnopqrstuvwxyz".split("");
 
 export default function AssText() {
-  const [state, dispatch] = useAssContext();
+  const [assState, assDispatch] = useAssContext();
+  const [isFocused, setIsFocused] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const handleClick = (e) => setIsFocused(ref?.current.contains(e.target));
+
+    document.addEventListener("click", handleClick);
+
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
+  }, [ref, setIsFocused]);
+
   const handleKeystroke = useCallback(
     (e) => {
+      if (!isFocused) {
+        return;
+      }
+
       if (e.key === "Escape") {
-        dispatch({ type: "RESTART_ASS" });
+        assDispatch({ type: "RESTART_ASS" });
         return;
       }
 
       if (ALPHA_LOWER.includes(e.key)) {
-        if (!state.startTime) {
-          dispatch({ type: "START_ASS" });
+        if (!assState.startTime) {
+          assDispatch({ type: "START_ASS" });
         }
-        dispatch({ type: "LETTER", payload: e.key });
+        assDispatch({ type: "LETTER", payload: e.key });
       }
       if (e.key === " ") {
-        dispatch({ type: "SPACE" });
+        assDispatch({ type: "SPACE" });
       }
       if (e.key === "Backspace") {
-        dispatch({ type: "BACKSPACE" });
+        assDispatch({ type: "BACKSPACE" });
       }
     },
-    [state, dispatch]
+    [assState, assDispatch, isFocused]
   );
 
   useEffect(() => {
@@ -39,9 +56,9 @@ export default function AssText() {
   }, [handleKeystroke]);
 
   return (
-    <div className={styles.text}>
-      {state.text.map((word, wordIndex) => {
-        const currentWordIndex = state.typedText.length;
+    <div ref={ref} autoFocus id={styles.text}>
+      {assState.text.map((word, wordIndex) => {
+        const currentWordIndex = assState.typedText.length;
         return (
           <span
             key={wordIndex}
@@ -56,9 +73,9 @@ export default function AssText() {
             {word.split("").map((letter, letterIndex) => {
               let typedLetter;
               if (wordIndex < currentWordIndex) {
-                typedLetter = state.typedText[wordIndex][letterIndex];
+                typedLetter = assState.typedText[wordIndex][letterIndex];
               } else if (wordIndex === currentWordIndex) {
-                typedLetter = state.currentWord[letterIndex];
+                typedLetter = assState.currentWord[letterIndex];
               }
               return (
                 <span
@@ -74,7 +91,7 @@ export default function AssText() {
                     {
                       [styles.next]:
                         wordIndex === currentWordIndex &&
-                        letterIndex === state.currentWord.length,
+                        letterIndex === assState.currentWord.length,
                     }
                   )}
                 >
