@@ -44,7 +44,7 @@ function App() {
     event.preventDefault();
 
     fetch(
-      `${process.env.REACT_APP_API_ORIGIN}api/login?` +
+      `${process.env.REACT_APP_API_ORIGIN}/api/login?` +
         new URLSearchParams({ username, password }),
       {
         method: "POST",
