@@ -13,7 +13,7 @@ export const AuthContextProvider = authContext.Provider;
 
 function authReducer(state, action) {
   switch (action.type) {
-    case "LOGIN":
+    case "AUTH_SUCCESS":
       return {
         ...state,
         id: action.payload.id,

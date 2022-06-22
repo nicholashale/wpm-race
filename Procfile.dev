@@ -1,3 +1,3 @@
-api: cd api && PORT=3000 bundle exec rails s
+api: cd api && PORT=3000 CLIENT_ORIGIN="http://localhost:4000" bundle exec rails s
 pvp: npm --prefix pvp i && PORT=3001 CLIENT_ORIGIN="http://localhost:4000" npm --prefix pvp run dev
 client: npm --prefix client i && PORT=4000 REACT_APP_API_ORIGIN="http://localhost:3000" REACT_APP_PVP_ORIGIN="http://localhost:3001" npm --prefix client start
