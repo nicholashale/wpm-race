@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { io } from "socket.io-client";
 import { useAssReducer, AssContextProvider } from "./assState";
 import { useAuthReducer, AuthContextProvider } from "./authState";
 import AssText from "./AssText";
@@ -10,7 +11,18 @@ function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [authState, authDispatch] = useAuthReducer();
-  // const [user, setUser] = useState(null);
+  const [lobbyCode, setLobbyCode] = useState(null);
+  const socket = useMemo(() => io("http://localhost:3001"), []);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("createdLobby", (payload) => setLobbyCode(payload.lobbyCode));
+    }
+  }, [socket]);
+
+  function handleCreateLobby() {
+    socket.emit("createLobby", { text: assState.text });
+  }
 
   function handleLogin(event) {
     event.preventDefault();
@@ -62,6 +74,12 @@ function App() {
           <button type="submit">Login!</button>
         </form>
 
+        <div>
+          {lobbyCode && `Your lobby code is ${lobbyCode}`}
+          {!lobbyCode && (
+            <button onClick={handleCreateLobby}>Create Lobby!</button>
+          )}
+        </div>
         <AssContextProvider value={[assState, assDispatch]}>
           <AssText />
           {assState.endTime && <StatDisplay />}
