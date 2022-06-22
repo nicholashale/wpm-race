@@ -1,12 +1,13 @@
-import { Server } from "socket.io";
 import { createServer } from "http";
+
 import randomWords from "random-words";
+import { Server } from "socket.io";
 
 let roomState = {};
 
 const io = new Server(createServer(), {
   cors: {
-    origin: "http://localhost:4000",
+    origin: process.env.CLIENT_ORIGIN,
   },
 });
 
@@ -32,4 +33,6 @@ io.on("connection", (socket) => {
   });
 });
 
-io.listen(3001);
+io.listen(process.env.PORT);
+
+console.log(`Listening on ${process.env.PORT}`);

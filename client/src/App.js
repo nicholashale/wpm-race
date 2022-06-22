@@ -14,7 +14,9 @@ function App() {
   const [lobbyCode, setLobbyCode] = useState(null);
   const [players, setPlayers] = useState(null);
   const [lobbyCodeInput, setLobbyCodeInput] = useState("");
-  const socket = useMemo(() => io("http://localhost:3001"), []);
+  const socket = useMemo(() => {
+    return io(process.env.REACT_APP_PVP_ORIGIN);
+  }, []);
 
   useEffect(() => {
     if (socket) {
@@ -41,9 +43,13 @@ function App() {
   function handleLogin(event) {
     event.preventDefault();
 
-    fetch("/api/login?" + new URLSearchParams({ username, password }), {
-      method: "POST",
-    })
+    fetch(
+      `${process.env.REACT_APP_API_ORIGIN}api/login?` +
+        new URLSearchParams({ username, password }),
+      {
+        method: "POST",
+      }
+    )
       .then((res) => res.json())
       .then((user) =>
         authDispatch({

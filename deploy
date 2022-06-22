@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+set -euo pipefail
+
+# git remote add api https://git.heroku.com/wpm-race-api.git
+# git remote add pvp https://git.heroku.com/wpm-race-pvp.git
+# git remote add client https://git.heroku.com/wpm-race.git
+
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+git subtree push --prefix api api ${BRANCH:-main}:main
+git subtree push --prefix pvp pvp ${BRANCH:-main}:main
+git subtree push --prefix client client ${BRANCH:-main}:main

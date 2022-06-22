@@ -1,4 +1,4 @@
-class Api::UsersController < ApplicationController
+class UsersController < ApplicationController
     rescue_from ActiveRecord::RecordNotFound, with: :render_not_found_response
     rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
 
@@ -22,7 +22,7 @@ class Api::UsersController < ApplicationController
             render json: user, status: :created
         else
             render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
-        end 
+        end
     end
 
     def update
@@ -50,7 +50,7 @@ class Api::UsersController < ApplicationController
     def render_not_found_response
         render json: {error: "User not found"}, status: :not_found
     end
-    
+
     def render_unprocessable_entity_response
         render json: {errors: "Invalid User entity"}, status: :unprocessable_entity
     end

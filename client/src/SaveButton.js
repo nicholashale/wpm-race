@@ -6,7 +6,8 @@ export default function SaveButton() {
   const [authState, authDispatch] = useAuthContext();
   function handleClick() {
     fetch(
-      "/api/races?" + new URLSearchParams({ text: assState.text.join(" ") }),
+      `${process.env.REACT_APP_API_ORIGIN}/races?` +
+        new URLSearchParams({ text: assState.text.join(" ") }),
       {
         method: "POST",
       }
@@ -14,7 +15,7 @@ export default function SaveButton() {
       .then((res) => res.json())
       .then((race) => {
         fetch(
-          "/api/reports?" +
+          `${process.env.REACT_APP_API_ORIGIN}/reports?` +
             new URLSearchParams({
               user_id: authState.id,
               race_id: race.id,

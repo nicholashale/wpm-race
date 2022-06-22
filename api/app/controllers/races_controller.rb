@@ -1,6 +1,6 @@
-class Api::RacesController < ApplicationController
-    
-    def create 
+class RacesController < ApplicationController
+
+    def create
         race = Race.create(race_params)
         if race.valid?
             render json: race, status: :created
@@ -9,8 +9,8 @@ class Api::RacesController < ApplicationController
         end
     end
 
-    private 
-    
+    private
+
     def race_params
         params.permit(:text)
     end
