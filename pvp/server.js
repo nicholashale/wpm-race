@@ -10,20 +10,24 @@ const io = new Server(createServer(), {
   },
 });
 
-io.on("connection", (client) => {
-  client.on("createLobby", (payload, cb) => {
+io.on("connection", (socket) => {
+  socket.on("createLobby", (payload, cb) => {
     const lobbyCode = randomWords(1).join("").toUpperCase();
-    client.join(lobbyCode);
+    socket.join(lobbyCode);
     cb({ lobbyCode });
-    roomState[lobbyCode] = { text: payload.text };
-    //client.to(lobbyCode).emit("setText", { text: payload.text });
+    roomState[lobbyCode] = {
+      text: payload.text,
+      players: { [socket.id]: { ready: false } },
+    };
   });
-  client.on("joinLobby", (payload, cb) => {
-    if (roomState.hasOwnProperty(payload.lobbyCode)) {
-      client.join(payload.lobbyCode);
-      cb({ text: roomState[payload.lobbyCode].text });
+  socket.on("joinLobby", ({ lobbyCode }, cb) => {
+    if (roomState.hasOwnProperty(lobbyCode)) {
+      socket.join(lobbyCode);
+      roomState[lobbyCode].players[socket.id] = { ready: false };
+      cb(roomState[lobbyCode]);
+      socket.to(lobbyCode).emit("playerJoined", roomState[lobbyCode].players);
     } else {
-      client.emit("failedJoin");
+      socket.emit("failedJoin");
     }
   });
 });

@@ -12,6 +12,7 @@ function App() {
   const [password, setPassword] = useState("");
   const [authState, authDispatch] = useAuthReducer();
   const [lobbyCode, setLobbyCode] = useState(null);
+  const [players, setPlayers] = useState(null);
   const [lobbyCodeInput, setLobbyCodeInput] = useState("");
   const socket = useMemo(() => io("http://localhost:3001"), []);
 
@@ -19,6 +20,7 @@ function App() {
     if (socket) {
       //handle failedJoin event
       socket.on("setText", (payload) => alert(payload.text));
+      socket.on("playerJoined", setPlayers);
     }
   }, [socket]);
 
@@ -31,8 +33,8 @@ function App() {
   function handleJoinLobby(e) {
     e.preventDefault();
     socket.emit("joinLobby", { lobbyCode: lobbyCodeInput }, (payload) => {
-      console.log("joined lobby");
       assDispatch({ type: "RECEIVED_TEXT", payload: payload.text });
+      setPlayers(payload.players);
     });
   }
 
@@ -101,6 +103,7 @@ function App() {
               </form>
             </>
           )}
+          {players && <p>Players: {Object.keys(players).join(", ")}</p>}
         </div>
         <AssContextProvider value={[assState, assDispatch]}>
           <AssText />
