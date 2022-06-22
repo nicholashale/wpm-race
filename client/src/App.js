@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { io } from "socket.io-client";
 import { useAssReducer, AssContextProvider } from "./assState";
+import { usePvpReducer, PvpContextProvider } from "./pvpState";
 import { useAuthReducer, AuthContextProvider } from "./authState";
 import AssText from "./AssText";
 import StatDisplay from "./StatDisplay";
@@ -8,12 +9,11 @@ import SaveButton from "./SaveButton";
 
 function App() {
   const [assState, assDispatch] = useAssReducer();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [usernameInput, setUsernameInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
   const [authState, authDispatch] = useAuthReducer();
-  const [lobbyCode, setLobbyCode] = useState(null);
-  const [players, setPlayers] = useState(null);
   const [lobbyCodeInput, setLobbyCodeInput] = useState("");
+  const [pvpState, pvpDispatch] = usePvpReducer();
   const socket = useMemo(() => {
     return io(process.env.REACT_APP_PVP_ORIGIN);
   }, []);
@@ -22,13 +22,15 @@ function App() {
     if (socket) {
       //handle failedJoin event
       socket.on("setText", (payload) => alert(payload.text));
-      socket.on("playerJoined", setPlayers);
+      socket.on("playerJoined", (players) =>
+        pvpDispatch({ type: "SET_PLAYERS", payload: players })
+      );
     }
-  }, [socket]);
+  }, [socket, pvpDispatch]);
 
   function handleCreateLobby() {
     socket.emit("createLobby", { text: assState.text }, (payload) =>
-      setLobbyCode(payload.lobbyCode)
+      pvpDispatch({ type: "SET_LOBBY", payload: payload.lobbyCode })
     );
   }
 
@@ -36,7 +38,7 @@ function App() {
     e.preventDefault();
     socket.emit("joinLobby", { lobbyCode: lobbyCodeInput }, (payload) => {
       assDispatch({ type: "RECEIVED_TEXT", payload: payload.text });
-      setPlayers(payload.players);
+      pvpDispatch({ type: "SET_PLAYERS", payload: payload.players });
     });
   }
 
@@ -45,7 +47,10 @@ function App() {
 
     fetch(
       `${process.env.REACT_APP_API_ORIGIN}/api/login?` +
-        new URLSearchParams({ username, password }),
+        new URLSearchParams({
+          username: usernameInput,
+          password: passwordInput,
+        }),
       {
         method: "POST",
       }
@@ -73,10 +78,10 @@ function App() {
           <input
             type="text"
             id="username"
-            value={username}
+            value={usernameInput}
             onChange={(e) => {
               e.preventDefault();
-              setUsername(e.target.value);
+              setUsernameInput(e.target.value);
             }}
           />
           <br />
@@ -84,10 +89,10 @@ function App() {
           <input
             type="password"
             id="password"
-            value={password}
+            value={passwordInput}
             onChange={(e) => {
               e.preventDefault();
-              setPassword(e.target.value);
+              setPasswordInput(e.target.value);
             }}
           />
           <br />
@@ -95,8 +100,8 @@ function App() {
         </form>
 
         <div>
-          {lobbyCode && `Your lobby code is ${lobbyCode}`}
-          {!lobbyCode && (
+          {pvpState.lobbyCode && `Your lobby code is ${pvpState.lobbyCode}`}
+          {!pvpState.lobbyCode && (
             <>
               <button onClick={handleCreateLobby}>Create Lobby!</button>
               <form id="join-lobby" onSubmit={handleJoinLobby}>
@@ -109,7 +114,9 @@ function App() {
               </form>
             </>
           )}
-          {players && <p>Players: {Object.keys(players).join(", ")}</p>}
+          {pvpState.players && (
+            <p>Players: {Object.keys(pvpState.players).join(", ")}</p>
+          )}
         </div>
         <AssContextProvider value={[assState, assDispatch]}>
           <AssText />
