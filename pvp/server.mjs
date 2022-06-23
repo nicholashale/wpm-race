@@ -1,6 +1,6 @@
 import { createServer } from "http";
 
-import randomWords from "random-words";
+import pokemon from "pokemon";
 import { Server } from "socket.io";
 
 let roomState = {};
@@ -13,7 +13,7 @@ const io = new Server(createServer(), {
 
 io.on("connection", (socket) => {
   socket.on("createLobby", (payload, cb) => {
-    const lobbyCode = randomWords(1).join("").toUpperCase();
+    const lobbyCode = pokemon.random().toUpperCase();
     socket.join(lobbyCode);
     roomState[lobbyCode] = {
       text: payload.text,

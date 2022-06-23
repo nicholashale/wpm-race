@@ -7,7 +7,7 @@
     "dev": "nodemon server.mjs"
   },
   "dependencies": {
-    "random-words": "^1.2.0",
+    "pokemon": "^2.3.3",
     "socket.io": "^4.5.1"
   },
   "devDependencies": {

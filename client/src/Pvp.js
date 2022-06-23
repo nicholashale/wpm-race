@@ -29,7 +29,7 @@ export default function Pvp() {
     pvpState.socket.emit(
       "createLobby",
       { text: assState.text, username },
-      (payload) => pvpDispatch({ type: "SET_LOBBY", payload: payload })
+      (payload) => pvpDispatch({ type: "SET_LOBBY", payload })
     );
   }
 
