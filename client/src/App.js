@@ -59,7 +59,7 @@ function App() {
       }
       if (pvpState.lobbyCode) {
         socket.emit("assProgress", {
-          absPosition: assState.absPosition,
+          absPosition: assState.absPosition + 1,
           lobbyCode: pvpState.lobbyCode,
           username: authState.username,
         });
