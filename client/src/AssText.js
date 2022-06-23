@@ -54,78 +54,60 @@ export default function AssText() {
       document.removeEventListener("keyup", handleKeystroke);
     };
   }, [handleKeystroke]);
-
+  let absIndex = 0;
   return (
     <div ref={ref} autoFocus id={styles.text}>
-      {assState.text.map((word, wordIndex) => {
-        const currentWordIndex = assState.typedText.length;
-        return (
-          <span
-            key={wordIndex}
-            className={classNames(
-              styles.word,
-              {
-                [styles.active]: currentWordIndex === wordIndex,
-              },
-              { [styles.future]: wordIndex > currentWordIndex }
-            )}
-          >
-            {word.split("").map((letter, letterIndex) => {
-              let typedLetter;
-              if (wordIndex < currentWordIndex) {
-                typedLetter = assState.typedText[wordIndex][letterIndex];
-              } else if (wordIndex === currentWordIndex) {
-                typedLetter = assState.currentWord[letterIndex];
-              }
-              return (
-                <span
-                  key={letterIndex}
-                  className={classNames(
-                    styles.letter,
-                    {
-                      [styles.correct]: typedLetter && letter === typedLetter,
-                    },
-                    {
-                      [styles.incorrect]: typedLetter && letter !== typedLetter,
-                    },
-                    {
-                      [styles.next]:
-                        wordIndex === currentWordIndex &&
-                        letterIndex === assState.currentWord.length,
-                    }
-                  )}
-                >
-                  {letter}
-                </span>
-              );
-            })}
-          </span>
-        );
+      {assState.text
+        .map((word) => `${word} `)
+        .map((word, wordIndex) => {
+          const currentWordIndex = assState.typedText.length;
 
-        // if (letterIndex < state.position) {
-        // return (
-        //   <span
-        //     key={letterIndex}
-        //     className={classNames(
-        //       { [styles.letter]: letter !== " " },
-        //       { [styles.correct]: letter === state.typedText[letterIndex] },
-        //       { [styles.incorrect]: letter !== state.typedText[letterIndex] }
-        //     )}
-        //   >
-        //     {letter}
-        //     </span>
-        //   );
-        // } else {
-        //   return (
-        //     <span
-        //       key={letterIndex}
-        //       className={classNames(styles.letter, styles.inactive)}
-        //     >
-        //       {letter}
-        //     </span>
-        //   );
-        // }
-      })}
+          return (
+            <span
+              key={wordIndex}
+              className={classNames(
+                styles.word,
+                {
+                  [styles.active]: currentWordIndex === wordIndex,
+                },
+                { [styles.future]: wordIndex > currentWordIndex }
+              )}
+            >
+              {word.split("").map((letter, letterIndex) => {
+                let typedLetter;
+                if (letterIndex === word.length - 1) {
+                  typedLetter = null;
+                } else if (wordIndex < currentWordIndex) {
+                  typedLetter = assState.typedText[wordIndex][letterIndex];
+                } else if (wordIndex === currentWordIndex) {
+                  typedLetter = assState.currentWord[letterIndex];
+                }
+                absIndex += 1;
+                return (
+                  <span
+                    key={letterIndex}
+                    className={classNames(
+                      styles.letter,
+                      {
+                        [styles.correct]: typedLetter && letter === typedLetter,
+                      },
+                      {
+                        [styles.incorrect]:
+                          typedLetter && letter !== typedLetter,
+                      },
+                      {
+                        [styles.cursor]: absIndex === assState.absPosition,
+                      },
+                      { [styles.space]: typedLetter === null }
+                    )}
+                  >
+                    {letter === " " ? "a" : letter}
+                  </span>
+                );
+              })}
+            </span>
+          );
+        })}
     </div>
   );
 }

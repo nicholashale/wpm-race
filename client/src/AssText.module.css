@@ -9,7 +9,9 @@
 }
 
 .word {
-  margin: 0.37rem;
+  margin-top: 0.37rem;
+  margin-bottom: 0.37rem;
+  padding-right: 1px;
 }
 
 .word.active {
@@ -19,10 +21,27 @@
   color: grey;
 }
 
+.letter {
+  box-sizing: border-box;
+  padding-right: 1px;
+}
+
 .letter.correct {
   color: green;
 }
 
 .letter.incorrect {
   color: red;
+}
+
+.letter.cursor {
+  border-right: 1px solid black;
+  padding-right: 0px;
+}
+
+.letter.space {
+  /* width: 1ch;
+  height: 2rem;
+  display: inline-block; */
+  color: white;
 }
