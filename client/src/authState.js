@@ -6,6 +6,7 @@ export const useAuthContext = () => useContext(authContext);
 const initialAuthState = {
   id: null,
   username: null,
+  isAuthed: false,
 };
 
 const authContext = createContext();
@@ -18,8 +19,13 @@ function authReducer(state, action) {
         ...state,
         id: action.payload.id,
         username: action.payload.username,
+        isAuthed: true,
       };
-
+    case "SET_ANON_USERNAME":
+      return {
+        ...state,
+        username: action.payload.username,
+      };
     default:
       return state;
   }

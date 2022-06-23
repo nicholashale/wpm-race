@@ -6,6 +6,8 @@ export const usePvpContext = () => useContext(pvpContext);
 const initialPvpState = {
   lobbyCode: null,
   players: null,
+  host: null,
+  text: null,
 };
 
 const pvpContext = createContext();
@@ -23,7 +25,7 @@ function pvpReducer(state, action) {
     case "SET_LOBBY":
       return {
         ...state,
-        lobbyCode: action.payload,
+        ...action.payload,
       };
     default:
       return state;

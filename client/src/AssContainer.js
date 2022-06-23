@@ -5,7 +5,7 @@ import AssText from "./AssText";
 import StatDisplay from "./StatDisplay";
 import SaveButton from "./SaveButton";
 
-export default function Ass() {
+export default function AssContainer() {
   const [assState, assDispatch] = useAssContext();
   const [authState, authDispatch] = useAuthContext();
 
@@ -13,7 +13,7 @@ export default function Ass() {
     <div>
       <AssText />
       {assState.endTime && <StatDisplay />}
-      {assState.endTime && authState.username && <SaveButton />}
+      {assState.endTime && authState.isAuthed && <SaveButton />}
     </div>
   );
 }

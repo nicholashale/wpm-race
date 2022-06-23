@@ -2,7 +2,7 @@ import { useAssReducer, AssContextProvider } from "./assState";
 import { usePvpReducer, PvpContextProvider } from "./pvpState";
 import { useAuthReducer, AuthContextProvider } from "./authState";
 
-import Ass from "./Ass";
+import AssContainer from "./AssContainer";
 import Auth from "./Auth";
 import Pvp from "./Pvp";
 
@@ -18,7 +18,7 @@ function App() {
           <div id="app">
             <Auth />
             <Pvp />
-            <Ass />
+            <AssContainer />
           </div>
         </PvpContextProvider>
       </AssContextProvider>
