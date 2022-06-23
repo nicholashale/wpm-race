@@ -23,7 +23,7 @@
 
 .letter {
   box-sizing: border-box;
-  padding-right: 1px;
+  padding-right: 3px;
 }
 
 .letter.correct {
@@ -35,8 +35,13 @@
 }
 
 .letter.cursor {
-  border-right: 1px solid black;
+  border-right: 3px solid black;
   padding-right: 0px;
+}
+
+.letter.ghostCursor {
+  border-right: 2px solid #bbbbbb;
+  padding-right: 1px;
 }
 
 .letter.space {

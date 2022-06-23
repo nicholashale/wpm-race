@@ -1,6 +1,5 @@
-import { io } from "socket.io-client";
 import rw from "random-words";
-import { useState, useEffect, useMemo } from "react";
+import { useState } from "react";
 
 import { usePvpContext } from "./pvpState";
 import { useAssContext } from "./assState";
@@ -12,20 +11,6 @@ export default function Pvp() {
   const [authState, authDispatch] = useAuthContext();
 
   const [lobbyCodeInput, setLobbyCodeInput] = useState("");
-
-  const socket = useMemo(() => {
-    return io(process.env.REACT_APP_PVP_ORIGIN);
-  }, []);
-
-  useEffect(() => {
-    if (socket) {
-      //handle failedJoin event
-      socket.on("setText", (payload) => alert(payload.text));
-      socket.on("playerJoined", (players) =>
-        pvpDispatch({ type: "SET_PLAYERS", payload: players })
-      );
-    }
-  }, [socket, pvpDispatch]);
 
   function getAnonUsernameIfNecessary() {
     let username = authState.username;
@@ -41,15 +26,17 @@ export default function Pvp() {
 
   function handleCreateLobby() {
     const username = getAnonUsernameIfNecessary();
-    socket.emit("createLobby", { text: assState.text, username }, (payload) =>
-      pvpDispatch({ type: "SET_LOBBY", payload: payload })
+    pvpState.socket.emit(
+      "createLobby",
+      { text: assState.text, username },
+      (payload) => pvpDispatch({ type: "SET_LOBBY", payload: payload })
     );
   }
 
   function handleJoinLobby(e) {
     const username = getAnonUsernameIfNecessary();
     e.preventDefault();
-    socket.emit(
+    pvpState.socket.emit(
       "joinLobby",
       { lobbyCode: lobbyCodeInput, username },
       (payload) => {

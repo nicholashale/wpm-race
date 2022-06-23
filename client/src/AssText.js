@@ -1,60 +1,35 @@
 import classNames from "classnames";
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import styles from "./AssText.module.css";
 import { useAssContext } from "./assState";
-
-const ALPHA_LOWER = "abcdefghijklmnopqrstuvwxyz".split("");
+import { useAuthContext } from "./authState";
+import { usePvpContext } from "./pvpState";
 
 export default function AssText() {
   const [assState, assDispatch] = useAssContext();
-  const [isFocused, setIsFocused] = useState(false);
+  const [pvpState, pvpDispatch] = usePvpContext();
+  const [authState, authDispatch] = useAuthContext();
   const ref = useRef(null);
 
   useEffect(() => {
-    const handleClick = (e) => setIsFocused(ref?.current.contains(e.target));
+    const handleClick = (e) =>
+      assDispatch({
+        type: "SET_FOCUSED",
+        payload: ref?.current.contains(e.target),
+      });
 
     document.addEventListener("click", handleClick);
 
     return () => {
       document.removeEventListener("click", handleClick);
     };
-  }, [ref, setIsFocused]);
+  }, [ref, assDispatch]);
 
-  const handleKeystroke = useCallback(
-    (e) => {
-      if (!isFocused) {
-        return;
-      }
-
-      if (e.key === "Escape") {
-        assDispatch({ type: "RESTART_ASS" });
-        return;
-      }
-
-      if (ALPHA_LOWER.includes(e.key)) {
-        if (!assState.startTime) {
-          assDispatch({ type: "START_ASS" });
-        }
-        assDispatch({ type: "LETTER", payload: e.key });
-      }
-      if (e.key === " ") {
-        assDispatch({ type: "SPACE" });
-      }
-      if (e.key === "Backspace") {
-        assDispatch({ type: "BACKSPACE" });
-      }
-    },
-    [assState, assDispatch, isFocused]
-  );
-
-  useEffect(() => {
-    document.addEventListener("keyup", handleKeystroke);
-    return () => {
-      document.removeEventListener("keyup", handleKeystroke);
-    };
-  }, [handleKeystroke]);
   let absIndex = 0;
+  const ghostCursors = Object.keys(pvpState.players ?? [])
+    .filter((username) => username !== authState.username)
+    .map((username) => pvpState.players[username].absPosition);
   return (
     <div ref={ref} autoFocus id={styles.text}>
       {assState.text
@@ -98,7 +73,8 @@ export default function AssText() {
                       {
                         [styles.cursor]: absIndex === assState.absPosition,
                       },
-                      { [styles.space]: typedLetter === null }
+                      { [styles.space]: typedLetter === null },
+                      { [styles.ghostCursor]: ghostCursors.includes(absIndex) }
                     )}
                   >
                     {letter === " " ? "a" : letter}

@@ -12,6 +12,7 @@ const initialAssState = () => ({
   currentWord: [],
   accuracy: null,
   absPosition: 0,
+  isFocused: false,
 });
 
 const assContext = createContext();
@@ -96,6 +97,13 @@ function assReducer(state, action) {
       return {
         ...initialAssState(),
         text: action.payload,
+      };
+    }
+
+    case "SET_FOCUSED": {
+      return {
+        ...state,
+        isFocused: action.payload,
       };
     }
 
