@@ -5,7 +5,7 @@ export const useAssReducer = () => useReducer(assReducer, initialAssState());
 export const useAssContext = () => useContext(assContext);
 
 const initialAssState = () => ({
-  text: randomWords(50),
+  text: randomWords(25),
   typedText: [],
   startTime: null,
   endTime: null,
