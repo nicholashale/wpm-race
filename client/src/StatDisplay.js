@@ -8,7 +8,7 @@ export default function StatDisplay() {
   return (
     <div>
       <p>Your typing speed is {wpm} words per minute!</p>
-      <p>Your accuracy is {state.accuracy * 100}%!</p>
+      <p>Your accuracy is {Math.round(state.accuracy * 100)}%!</p>
     </div>
   );
 }
