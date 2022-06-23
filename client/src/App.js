@@ -8,6 +8,7 @@ import { useAuthReducer, AuthContextProvider } from "./authState";
 import AssContainer from "./AssContainer";
 import Auth from "./Auth";
 import Pvp from "./Pvp";
+import styles from "./App.module.css";
 
 const ALPHA_LOWER = "abcdefghijklmnopqrstuvwxyz".split("");
 
@@ -79,7 +80,7 @@ function App() {
     <AuthContextProvider value={[authState, authDispatch]}>
       <AssContextProvider value={[assState, assDispatch]}>
         <PvpContextProvider value={[pvpState, pvpDispatch]}>
-          <div id="app">
+          <div id={styles.app}>
             <Auth />
             <Pvp />
             <AssContainer />
