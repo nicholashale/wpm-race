@@ -11,7 +11,7 @@
 .word {
   margin-top: 0.37rem;
   margin-bottom: 0.37rem;
-  padding-right: 1px;
+  /* padding-right: 1px; */
 }
 
 .word.active {
@@ -24,6 +24,7 @@
 .letter {
   box-sizing: border-box;
   padding-right: 3px;
+  padding-bottom: 2px;
 }
 
 .letter.correct {
@@ -40,8 +41,8 @@
 }
 
 .letter.ghostCursor {
-  border-right: 2px solid #bbbbbb;
-  padding-right: 1px;
+  border-bottom: 2px solid #aaaaaa;
+  padding-bottom: 0px;
 }
 
 .letter.space {
